@@ -1,6 +1,8 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <algorithm>
+#include <cmath>
 
 using namespace std;
 
@@ -111,17 +113,25 @@ public:
     // Search a Book by id - Complexity: O(h)
     bool search(BSTNode *root, int id)
     {
-        if (root == nullptr)
+        int steps = 0;
+        if (root == nullptr){
+            cout << "Tree is empty\n";
             return false;
+        }
         while (root != nullptr)
         {
-            if (root->book.id == id)
+            steps++;
+            if (root->book.id == id){
+
+                cout << "Book found in " << steps << " steps.\n";
                 return true;
+            }
             else if (root->book.id > id)
                 root = root->left;
             else
                 root = root->right;
         }
+        cout << "Not found after " << steps << " steps\n";
         return false;
     }
 
@@ -133,6 +143,10 @@ public:
             cout << "Book Title:  " << root->book.title << "\n";
             cout << "Book Author:  " << root->book.author << "\n";
             inOrder(root->right);
+        }
+        int getHeight(BSTNode* root) { 
+            if(root == nullptr) return 0;
+         return 1 + max(getHeight(root->left), getHeight(root->right)); 
         }
 };
 //===part 2 ===
@@ -304,18 +318,32 @@ private:
                 node->right = deleteNode(node->right, successor->book.id);
             }
         }
+
+        if(node == nullptr)
+            return node;
+
         return balance(node);
     }
 
-    AvlNode *search(AvlNode *node, int id)
+    AvlNode *search(AvlNode *node, int id, int steps = 0)
     {
-        if (node == nullptr)
+        if (node == nullptr){
+            cout << "Not found after " << steps << " steps\n";
             return nullptr;
-        if (id == node->book.id)
+        }
+
+        steps++;
+
+        if (id == node->book.id){
+            cout << "Book found in " << steps << " steps.\n";
             return node;
-        if (id < node->book.id)
-            return search(node->left, id);
-        return search(node->right, id);
+        }
+        else if (id < node->book.id){
+            return search(node->left, id, steps);
+        }
+        else{
+            return search(node->right, id, steps);
+        }
     }
 
     void inOrder(AvlNode *node)
@@ -435,35 +463,88 @@ public:
 
 int main()
 {
+    cout << "=== Random Insertions ===\n";
+    BST bstRandom;
+    AVLTree avlRandom;
+            vector<Book> randomBooks = { {150, "Book1", "Author1"}, 
+            {320, "Book2", "Author2"}, 
+            {45, "Book3", "Author3"}, 
+            {210, "Book4", "Author4"}, 
+            {99, "Book5", "Author5"}, 
+            {410, "Book6", "Author6"}, 
+            {275, "Book7", "Author7"}, 
+            {60, "Book8", "Author8"},
+            {500, "Book9", "Author9"}, 
+            {15, "Book10", "Author10"}, 
+            {180, "Book11", "Author11"}, 
+            {350, "Book12", "Author12"}, 
+            {75, "Book13", "Author13"}, 
+            {290, "Book14", "Author14"}, 
+            {33, "Book15", "Author15"}, 
+            {430, "Book16", "Author16"}, 
+            {120, "Book17", "Author17"}, 
+            {250, "Book18", "Author18"}, 
+            {390, "Book19", "Author19"}, 
+            {10, "Book20", "Author20"} 
+        };
+    for (Book &b : randomBooks)
+    {
+        bstRandom.root = bstRandom.insert(bstRandom.root, b);
+        avlRandom.insert(b);
+    }
 
-    AVLTree avl;
+    cout << "\nBST height:\n";
+    cout << "Height: " << bstRandom.getHeight(bstRandom.root) << "\n";
+    cout << "\nAVL height:\n";
+    cout << "Height: " << avlRandom.getHeight() << "\n";
+     cout << "BST Search:\n";   
+    bstRandom.search(bstRandom.root, 99); // existing
+    bstRandom.search(bstRandom.root, 999); // non  
+        cout << "\nAVL Search:\n";
+    avlRandom.search(99); // existing
+    avlRandom.search(999); // non
 
-    avl.insert({150, "The Great Gatsby", "F. Scott Fitzgerald"});
-    avl.insert({320, "To Kill a Mockingbird", "Harper Lee"});
-    avl.insert({45, "1984", "George Orwell"});
+    //---------------------------------------------------------------------
+    cout << "\n=== Sorted Insertions ===\n";
+    BST bstSorted;
+    AVLTree avlSorted;
+    vector<Book> sortedBooks = { {10, "Book1", "Author1"}, 
+            {20, "Book2", "Author2"}, 
+            {30, "Book3", "Author3"}, 
+            {40, "Book4", "Author4"}, 
+            {50, "Book5", "Author5"}, 
+            {60, "Book6", "Author6"}, 
+            {70, "Book7", "Author7"}, 
+            {80, "Book8", "Author8"},
+            {90, "Book9", "Author9"}, 
+            {100, "Book10", "Author10"}, 
+            {110, "Book11", "Author11"}, 
+            {120, "Book12", "Author12"}, 
+            {130, "Book13", "Author13"}, 
+            {140, "Book14", "Author14"}, 
+            {150, "Book15", "Author15"}, 
+            {160, "Book16", "Author16"}, 
+            {170, "Book17", "Author17"}, 
+            {180, "Book18", "Author18"}, 
+            {190, "Book19", "Author19"}, 
+            {200, "Book20", "Author20"} 
+        };
+    for (Book &b : sortedBooks)
+    {
+        bstSorted.root = bstSorted.insert(bstSorted.root, b);
+        avlSorted.insert(b);
+    }
 
-    cout << "\n=== ALL BOOKS (sorted by ID) ===\n";
-    avl.displayAll();
-
-    cout << "\n=== TREE HEIGHT ===\n";
-    cout << "AVL Tree height: " << avl.getHeight() << "\n";
-
-    cout << "\n=== SEARCH ===\n";
-    avl.search(45);
-    avl.search(999);
-
-    /*cout << "\n=== DELETE Book ID 150 ===\n";
-    avl.deleteBook(150);
-    avl.search(150); // Should say not found now
-*/
-    cout << "\n=== ALL BOOKS AFTER DELETION ===\n";
-    avl.displayAll();
-    cout << "\n=== BOOKS IN ID RANGE [30, 200] ===\n";
-    avl.displayRange(30, 200);
-    cout << "\n=== FIND CLOSEST ID TO 100 ===\n";
-    avl.findClosestID(100);
-    cout << "\n=== FIND CLOSEST ID TO 200 ===\n";
-    avl.findClosestID(200);
+    cout << "\nBST height:\n";
+    cout << "Height: " << bstSorted.getHeight(bstSorted.root) << "\n";
+    cout << "\nAVL height:\n";
+    cout << "Height: " << avlSorted.getHeight() << "\n";
+     cout << "\nBST Search:\n";
+    bstSorted.search(bstSorted.root, 100); // existing
+    bstSorted.search(bstSorted.root, 999); // non 
+        cout << "\nAVL Search:\n";  
+    avlSorted.search(100); // existing
+    avlSorted.search(999); // non
 
     return 0;
 }

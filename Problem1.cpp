@@ -1,4 +1,7 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include <string>
+#include <vector>
+
 using namespace std;
 
 struct Book {
@@ -30,14 +33,14 @@ class BST {
             BSTNode* new_book = new BSTNode(b);
             if(root == nullptr) return new_book;
             BSTNode* temp = root;
-            while(temp != nullptr){
+            while(temp != nullptr){ // Traverse 
                 if(new_book->book.id < temp->book.id && temp->left != nullptr){
                     temp = temp->left;
                 }else if(new_book->book.id > temp->book.id && temp->right != nullptr){
                     temp = temp->right;
                 }else break;
-            }
-            if(new_book->book.id < temp->book.id){
+            } // Insert at the correct position
+            if(new_book->book.id < temp->book.id){ 
                 temp->left = new_book;
             }else if(new_book->book.id > temp->book.id){
                 temp->right = new_book;
@@ -102,7 +105,7 @@ class BST {
 
         // DFS Inorder Traversal (LVR) - Complexity: O(n)
         void inOrder(BSTNode* root){
-            if(root == nullptr) cout << "No Books Found\n";
+            if(root == nullptr) return;
             inOrder(root->left);
             cout << "Book ID: " << root->book.id << "\n";
             cout << "Book Title:  " << root->book.title << "\n";

@@ -107,9 +107,9 @@ class Heap {
                 }
                 cout << "Next patient: " << heap[0].name << " | Severity: " << heap[0].severity << " | Arrival: "  << heap[0].arrivalTime << "\n";
             }
-        
-             void updateSeverity(int id, int newSeverity){ 
-                for(int i = 0; i < heap.size(); i++){ 
+
+             void updateSeverity(int id, int newSeverity){
+                for(int i = 0; i < heap.size(); i++){
                     if(heap[i].id == id){
                         int oldSeverity = heap[i].severity;
                         heap[i].severity = newSeverity;
@@ -151,9 +151,11 @@ int main() {
 
     Heap hospital;
 
-    hospital.displayAllPatients();//test when empty
+    cout << "========== CUSTOM HEAP TEST ==========\n";
 
-    // insert 25 test patients
+    hospital.displayAllPatients(); // empty test
+
+    // insert 25 patients
     hospital.insertPatient({1, "Ahmed", 8, 1});
     hospital.insertPatient({2, "Sara", 5, 2});
     hospital.insertPatient({3, "Omar", 9, 3});
@@ -180,36 +182,97 @@ int main() {
     hospital.insertPatient({24, "Mahmoud", 8, 24});
     hospital.insertPatient({25, "Reem", 6, 25});
 
-    cout << "\n==DISPLAY ALL PATIENTS==\n";
-
+    cout << "\n== DISPLAY ALL PATIENTS ==\n";
     hospital.displayAllPatients();
 
-    cout << "\n==VIEW NEXT PATIENT==\n";
-
+    cout << "\n== VIEW NEXT PATIENT ==\n";
     hospital.viewPatient();
 
-    cout << "\n==UPDATE SEVERITY TESTS==\n";
-
+    cout << "\n== UPDATE SEVERITY ==\n";
     hospital.updateSeverity(2, 10);
     hospital.updateSeverity(15, 9);
     hospital.updateSeverity(9, 1);
-    hospital.updateSeverity(100, 7);  // invalid ID test
+    hospital.updateSeverity(100, 7);
 
-    cout << "\n==VIEW NEXT PATIENT AFTER UPDATES==\n";
-
+    cout << "\n== VIEW AFTER UPDATES ==\n";
     hospital.viewPatient();
 
-    cout << "\n==TREATING PATIENTS==\n";
-
+    cout << "\n== TREAT PATIENTS ==\n";
     hospital.treatPatient();
     hospital.treatPatient();
     hospital.treatPatient();
     hospital.treatPatient();
     hospital.treatPatient();
 
-    cout << "\n==REMAINING PATIENTS==\n";
-
+    cout << "\n== REMAINING PATIENTS ==\n";
     hospital.displayAllPatients();
+
+
+
+    cout << "\n========== STL PRIORITY_QUEUE TEST ==========\n";
+
+    priority_queue<Patient, vector<Patient>, ComparePatients> pq;
+
+    // insert same patients into STL queue
+    pq.push({1, "Ahmed", 8, 1});
+    pq.push({2, "Sara", 5, 2});
+    pq.push({3, "Omar", 9, 3});
+    pq.push({4, "Mona", 4, 4});
+    pq.push({5, "Youssef", 7, 5});
+    pq.push({6, "Laila", 10, 6});
+    pq.push({7, "Kareem", 6, 7});
+    pq.push({8, "Nour", 8, 8});
+    pq.push({9, "Hassan", 3, 9});
+    pq.push({10, "Mariam", 9, 10});
+
+    cout << "\n== TOP PATIENT IN STL PRIORITY QUEUE ==\n";
+
+    Patient topPatient = pq.top();
+
+    cout << "Next patient: "
+         << topPatient.name
+         << " | Severity: "
+         << topPatient.severity
+         << " | Arrival: "
+         << topPatient.arrivalTime
+         << "\n";
+
+    cout << "\n== TREATING PATIENTS USING STL PRIORITY_QUEUE ==\n";
+
+    for(int i = 0; i < 5; i++) {
+
+        if(!pq.empty()) {
+
+            Patient current = pq.top();
+
+            cout << "Treating patient "
+                 << current.name
+                 << " | Severity: "
+                 << current.severity
+                 << " | Arrival: "
+                 << current.arrivalTime
+                 << "\n";
+
+            pq.pop();
+        }
+    }
+
+    cout << "\n== REMAINING STL PATIENTS ==\n";
+
+    while(!pq.empty()) {
+
+        Patient current = pq.top();
+
+        cout << "Patient: "
+             << current.name
+             << " | Severity: "
+             << current.severity
+             << " | Arrival: "
+             << current.arrivalTime
+             << "\n";
+
+        pq.pop();
+    }
 
     return 0;
 }

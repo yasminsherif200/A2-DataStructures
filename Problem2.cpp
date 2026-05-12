@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <queue>
 #include <algorithm>
 using namespace std;
 
@@ -69,8 +70,8 @@ class Heap {
             int left = leftChildIndex(index);
             int right = rightChildIndex(index);
 
-            if(largest < size && hasHighPriority(heap[left], heap[largest])) largest = left;
-            if(largest < size && hasHighPriority(heap[right], heap[largest])) largest = right;
+            if(left < size && hasHighPriority(heap[left], heap[largest])) largest = left;
+            if(right < size && hasHighPriority(heap[right], heap[largest])) largest = right;
             if(largest != index){
                 swap(heap[index], heap[largest]);
                 heapifyDown(largest);
@@ -106,9 +107,52 @@ class Heap {
                 }
                 cout << "Next patient: " << heap[0].name << " | Severity: " << heap[0].severity << " | Arrival: "  << heap[0].arrivalTime << "\n";
             }
-
-
+        
+             void updateSeverity(int id, int newSeverity){ 
+                for(int i = 0; i < heap.size(); i++){ 
+                    if(heap[i].id == id){
+                        int oldSeverity = heap[i].severity;
+                        heap[i].severity = newSeverity;
+                        cout << "Updated severity of patient " << heap[i].name << " from " << oldSeverity << " to " << newSeverity << "\n";
+                        if(newSeverity > oldSeverity) heapifyUp(i);
+                        else heapifyDown(i);
+                        return;
+                    }
+                }
+                cout << "Patient with ID " << id << " not found\n";
+            }
+            void displayAllPatients(){
+                if(heap.empty()){
+                    cout << "No Patients\n";
+                    return;
+                }
+                cout << "All patients in waiting list:\n";
+                for(const auto& patient : heap){
+                    cout << "Patient: " << patient.name << " | Severity: " << patient.severity << " | Arrival: "  << patient.arrivalTime << "\n";
+                }
+            }
 };
+struct ComparePatients {
+    bool operator()(Patient a, Patient b) {
+        if(a.severity > b.severity) {
+            return false;
+        }
+        if(a.severity < b.severity) {
+            return true;
+        }
+        if(a.arrivalTime < b.arrivalTime) {
+            return false;
+        }
+        return true;
+    }
+};
+
+    int main() {
+        Heap hospital;
+        priority_queue <Patient,vector<Patient>, ComparePatients> pq;
+
+        return 0;
+    }
 
 
 

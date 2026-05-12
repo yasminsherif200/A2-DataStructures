@@ -121,14 +121,25 @@ class Heap {
                 }
                 cout << "Patient with ID " << id << " not found\n";
             }
-            void displayAllPatients(){
-                if(heap.empty()){
+            void displayAllPatients() {
+                if (heap.empty()) {
                     cout << "No Patients\n";
                     return;
                 }
-                cout << "All patients in waiting list:\n";
-                for(const auto& patient : heap){
-                    cout << "Patient: " << patient.name << " | Severity: " << patient.severity << " | Arrival: "  << patient.arrivalTime << "\n";
+                cout << "All patients (level order):\n";
+                int level = 0;
+                int count = 1;
+                int idx   = 0;
+                while (idx < (int)heap.size()) {
+                    cout << "Level " << level << ": ";
+                    for (int i = 0; i < count && idx < (int)heap.size(); i++, idx++) {
+                        cout << "[" << heap[idx].name
+                            << " sev=" << heap[idx].severity
+                            << " t="   << heap[idx].arrivalTime << "] ";
+                    }
+                    cout << "\n";
+                    level++;
+                    count *= 2;
                 }
             }
 };
